@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DDDM · Сквозная практика с ИИ-ассистентом</title>
+<style>
+:root{
+  --blue:#0E9BD8; --blue-d:#0A84C2; --teal:#2BC0C8; --green:#7BEC5E; --green-d:#5FD24A;
+  --grad:linear-gradient(118deg,#0E9BD8 0%,#2BC0C8 46%,#8DF45C 100%);
+  --grad-soft:linear-gradient(118deg,#e8f7fb 0%,#eafbf0 60%,#f3fde9 100%);
+  --bg:#f3fafc; --card:#ffffff; --ink:#0e2430; --muted:#5a7384; --line:#e2eef2;
+  --shadow:0 10px 34px rgba(14,72,104,.10); --shadow-s:0 4px 16px rgba(14,72,104,.08);
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink);
+  background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--blue-d);text-decoration:none}
+h1,h2,h3{line-height:1.15;margin:0 0 .4em;font-weight:800;letter-spacing:-.01em}
+h2{font-size:30px} h3{font-size:20px}
+p{margin:0 0 1em}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;
+  padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.28)}
+.chip.dark{background:#eafaf0;color:#157a3a;border-color:#cdeede}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;cursor:pointer;
+  padding:12px 20px;border-radius:12px;border:0;background:#fff;color:var(--blue-d);box-shadow:var(--shadow-s);transition:.15s}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn.ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.4);box-shadow:none}
+.btn.ghost:hover{background:rgba(255,255,255,.24)}
+.btn.solid{background:var(--grad);color:#063}
+.btn.sm{padding:8px 14px;font-size:13px}
+
+/* header */
+header.top{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:18px;height:62px}
+.logo{display:flex;align-items:center;gap:11px;font-weight:800}
+.logo .mark{width:30px;height:30px;border-radius:9px;background:var(--grad);box-shadow:0 3px 10px rgba(43,192,200,.45)}
+.logo small{display:block;font-weight:600;font-size:11px;color:var(--muted);letter-spacing:.02em}
+nav.menu{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+nav.menu a{font-size:13.5px;font-weight:600;color:var(--muted);padding:7px 11px;border-radius:9px}
+nav.menu a:hover{background:#eef7fa;color:var(--ink)}
+@media(max-width:820px){nav.menu{display:none}}
+
+/* hero */
+.hero{background:var(--grad);color:#fff;position:relative;overflow:hidden;padding:74px 0 86px}
+.hero:after{content:"";position:absolute;right:-120px;top:-80px;width:520px;height:520px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.55),rgba(255,255,255,0) 62%);opacity:.5}
+.hero .wrap{position:relative;z-index:2}
+.hero h1{font-size:46px;max-width:18ch;margin-top:14px}
+.hero .lead{font-size:18.5px;max-width:62ch;opacity:.96}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.hero .meta{margin-top:30px;display:flex;gap:26px;flex-wrap:wrap;font-size:13.5px;opacity:.95}
+.hero .meta b{display:block;font-size:23px;font-weight:800}
+@media(max-width:680px){.hero h1{font-size:33px}}
+
+/* sections */
+section{padding:64px 0}
+section.alt{background:linear-gradient(180deg,#fff,#f0f9fc)}
+.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:12.5px;font-weight:800;color:var(--teal)}
+.sec-lead{color:var(--muted);max-width:64ch;font-size:16.5px}
+
+/* agent loop */
+.loop{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+@media(max-width:820px){.loop{grid-template-columns:1fr 1fr}}
+.loop .node{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow-s);position:relative}
+.loop .node .n{width:30px;height:30px;border-radius:9px;background:var(--grad-soft);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--blue-d);margin-bottom:10px}
+.loop .node h4{margin:0 0 5px;font-size:15.5px}
+.loop .node p{margin:0;font-size:13.5px;color:var(--muted)}
+.loopbar{margin-top:18px;background:var(--grad-soft);border:1px solid var(--line);border-radius:14px;padding:16px 20px;font-size:14.5px}
+.loopbar b{color:var(--blue-d)}
+
+/* steps */
+.steps{display:flex;flex-direction:column;gap:16px;margin-top:30px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-s);overflow:hidden}
+.step .head{display:flex;gap:16px;align-items:center;padding:18px 22px;cursor:pointer}
+.step .head .idx{flex:0 0 46px;height:46px;border-radius:13px;background:var(--grad);color:#063;font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center}
+.step .head .ttl{flex:1}
+.step .head .ttl h3{margin:0;font-size:18px}
+.step .head .ttl span{font-size:13px;color:var(--muted)}
+.step .head .art{font-size:12px;font-weight:700;color:#157a3a;background:#eafaf0;border:1px solid #cdeede;padding:5px 10px;border-radius:999px;white-space:nowrap}
+.step .head .tog{font-size:22px;color:var(--muted);transition:.2s}
+.step.open .head .tog{transform:rotate(45deg)}
+.step .body{display:none;padding:0 22px 22px;border-top:1px solid var(--line)}
+.step.open .body{display:block}
+.step .body .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:18px}
+@media(max-width:760px){.step .body .grid{grid-template-columns:1fr}}
+.lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:var(--teal);margin-bottom:8px}
+.proc{counter-reset:p;list-style:none;padding:0;margin:0}
+.proc li{position:relative;padding:0 0 10px 30px;font-size:14px}
+.proc li:before{counter-increment:p;content:counter(p);position:absolute;left:0;top:0;width:20px;height:20px;border-radius:6px;background:var(--grad-soft);color:var(--blue-d);font-weight:800;font-size:11.5px;display:flex;align-items:center;justify-content:center}
+.prompt{background:#0e2430;color:#d7eef6;border-radius:13px;padding:14px 14px 12px;font-size:12.7px;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;line-height:1.5;position:relative;white-space:pre-wrap;max-height:280px;overflow:auto}
+.prompt .copy{position:absolute;top:9px;right:9px;background:rgba(255,255,255,.12);color:#cfeede;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:5px 10px;font-size:11.5px;font-weight:700;cursor:pointer}
+.prompt .copy:hover{background:rgba(255,255,255,.22)}
+.pause{margin-top:14px;background:#fff8ec;border:1px solid #ffe2b0;border-radius:12px;padding:12px 15px;font-size:13.5px;color:#8a5a12}
+.pause b{color:#b5740c}
+
+/* artifacts / charts */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:26px}
+@media(max-width:760px){.cards{grid-template-columns:1fr}}
+.acard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow-s)}
+.acard h3{font-size:17px;margin-bottom:3px}
+.acard .sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin:6px 0 6px}
+.kpi{flex:1;min-width:120px;background:var(--grad-soft);border:1px solid var(--line);border-radius:13px;padding:13px 15px}
+.kpi b{display:block;font-size:25px;font-weight:800;letter-spacing:-.02em}
+.kpi span{font-size:12px;color:var(--muted)}
+.ctrl{display:flex;align-items:center;gap:12px;margin:14px 0 6px;font-size:13.5px}
+.ctrl input[type=range]{flex:1;accent-color:var(--blue)}
+.note-doc{font-size:14px}
+.note-doc h4{margin:14px 0 6px;font-size:14.5px;color:var(--blue-d)}
+.note-doc ul{margin:0 0 6px;padding-left:18px}
+.note-doc li{margin-bottom:4px}
+.tag-f{color:#0a7d3f;font-weight:700} .tag-i{color:#9a6a00;font-weight:700} .tag-h{color:#7a3ad6;font-weight:700}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;margin-top:8px;color:var(--muted)}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-1px}
+
+/* metric tree */
+.mtree{overflow:auto}
+svg{max-width:100%;height:auto;display:block}
+.tt{position:fixed;pointer-events:none;background:#0e2430;color:#fff;font-size:12px;padding:7px 10px;border-radius:8px;opacity:0;transition:.08s;z-index:80;white-space:nowrap;box-shadow:var(--shadow)}
+
+/* deck */
+.deck{margin-top:26px;background:#06222e;border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.slidebox{position:relative;border-radius:13px;overflow:hidden;background:#000;aspect-ratio:16/9}
+.slide{position:absolute;inset:0;padding:46px 54px;color:#fff;display:none;flex-direction:column;background:var(--grad)}
+.slide.on{display:flex}
+.slide.cover{justify-content:center}
+.slide h2{font-size:34px;color:#fff;margin:0 0 10px}
+.slide h3{font-size:26px;color:#063;margin:0 0 18px}
+.slide .k{font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.slide ul{margin:6px 0 0;padding-left:22px;font-size:18px} .slide li{margin-bottom:10px}
+.slide .big{font-size:64px;font-weight:800;letter-spacing:-.02em}
+.slide .cols{display:flex;gap:26px;margin-top:6px}
+.slide .cols div{flex:1;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);border-radius:14px;padding:16px}
+.slide .pg{position:absolute;right:24px;bottom:18px;font-size:12px;opacity:.8}
+.deck .nav{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:14px;color:#bfe6f2}
+.deck .nav button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;width:40px;height:38px;font-size:18px;cursor:pointer}
+.deck .nav button:hover{background:rgba(255,255,255,.24)}
+
+footer{background:#06222e;color:#bfe6f2;padding:46px 0;font-size:14px}
+footer .wrap{display:flex;gap:30px;flex-wrap:wrap;justify-content:space-between}
+footer a{color:#8fe3ff}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#0e2430;color:#fff;
+  padding:11px 18px;border-radius:11px;font-size:13.5px;opacity:0;transition:.25s;z-index:90;box-shadow:var(--shadow)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.banner{background:var(--grad-soft);border-bottom:1px solid var(--line);font-size:13px;color:#0e6a8c;text-align:center;padding:8px}
+</style>
+</head>
+<body>
+
+<div class="banner">🧪 Пристрелочный демо-набор v0.1 · вымышленный сквозной проект «Пульс» · структура и промпты для обсуждения</div>
+
+<header class="top"><div class="wrap">
+  <div class="logo"><div class="mark"></div><div>DDDM · Сквозная практика<small>Принятие решений на основе данных и ИИ</small></div></div>
+  <nav class="menu">
+    <a href="#how">Как работает</a>
+    <a href="#program">Программа</a>
+    <a href="#artifacts">Артефакты</a>
+    <a href="#finmodel">Финмодель</a>
+    <a href="#deck">Защита</a>
+  </nav>
+</div></header>
+
+<!-- HERO -->
+<div class="hero"><div class="wrap">
+  <span class="chip">▲ Telegram-агент · держит программу в памяти</span>
+  <h1>От бизнес-вопроса до защиты проекта — за руку с ИИ-ассистентом</h1>
+  <p class="lead">Студент проходит сквозную практику вместе с агентом в Telegram. Агент знает всю программу,
+    на каждом шаге выдаёт промпт, собирает промежуточный артефакт (doc / pdf), делает паузу на ваше ревью —
+    и только потом ведёт дальше. В финале — интерактивная презентация-защита в шаблоне заказчика.</p>
+  <div class="cta">
+    <a class="btn solid" href="#program">▶ Пройти программу</a>
+    <a class="btn ghost" href="#finmodel">📊 Открыть финмодель</a>
+    <a class="btn ghost" href="#deck">🖥 Презентация-защита</a>
+  </div>
+  <div class="meta">
+    <div><b>7</b>шагов сквозной практики</div>
+    <div><b>6</b>промежуточных артефактов</div>
+    <div><b>4</b>интерактивных графика финмодели</div>
+    <div><b>1</b>защита в MARP-шаблоне</div>
+  </div>
+</div></div>
+
+<!-- HOW IT WORKS -->
+<section id="how"><div class="wrap">
+  <span class="eyebrow">Принцип работы</span>
+  <h2>Агент = тренажёр-наставник, а не «ответчик»</h2>
+  <p class="sec-lead">Оригинальный курс использует репозиторий с промптами, DeepSeek для анализа рынка и Jupyter
+    для финмоделей. Здесь всё это переложено на ассистента: программа и подсказки лежат в публичном репозитории
+    на GitHub Pages, агент держит их в памяти и проводит студента по циклу.</p>
+  <div class="loop">
+    <div class="node"><div class="n">1</div><h4>Даёт промпт шага</h4><p>Агент берёт из программы готовый промпт и адаптирует под продукт студента.</p></div>
+    <div class="node"><div class="n">2</div><h4>Студент запускает</h4><p>Промпт уходит в ИИ (DeepSeek / Perplexity / Jupyter). Студент — контролёр выводов.</p></div>
+    <div class="node"><div class="n">3</div><h4>Собирает артефакт</h4><p>Агент оформляет результат в .doc / .pdf и выкладывает по ссылке для просмотра.</p></div>
+    <div class="node"><div class="n">4</div><h4>Пауза на ревью</h4><p>Студент проверяет и правит. Только после «ок» агент переходит к следующему шагу.</p></div>
+  </div>
+  <div class="loopbar">🔁 Цикл повторяется на каждом шаге. Агент <b>фиксирует прогресс</b>, помнит, что уже сделано,
+    и в конце <b>сам собирает</b> все артефакты в презентацию-защиту по шаблону заказчика.</div>
+</div></section>
+
+<!-- PROGRAM -->
+<section id="program" class="alt"><div class="wrap">
+  <span class="eyebrow">Сквозная практика · 7 шагов</span>
+  <h2>Программа: что делает агент на каждом шаге</h2>
+  <p class="sec-lead">Каждый шаг = промпт + описание процесса агента + выходной артефакт + пауза на ревью.
+    Нажмите на шаг, чтобы раскрыть промпт и логику. Демо ниже собрано по вымышленному продукту «Пульс» —
+    умные часы со встроенным ИИ-агентом.</p>
+  <div class="steps" id="steps"></div>
+</div></section>
+
+<!-- ARTIFACTS -->
+<section id="artifacts"><div class="wrap">
+  <span class="eyebrow">Промежуточные артефакты</span>
+  <h2>Что студент видит между шагами</h2>
+  <p class="sec-lead">Агент выкладывает каждый артефакт отдельным документом. Ниже — два ключевых: дерево метрик
+    (предматериалы) и аналитическая записка (М1). Финмодель вынесена в отдельный блок.</p>
+  <div class="cards">
+    <div class="acard">
+      <h3>Дерево метрик продукта «Пульс»</h3>
+      <div class="sub">Опережающие → расчётные → главная (запаздывающая). Артефакт предматериалов.</div>
+      <div class="mtree" id="mtree"></div>
+      <div class="legend">
+        <span><i style="background:#7BEC5E"></i>Опережающая (управляемая)</span>
+        <span><i style="background:#2BC0C8"></i>Расчётная</span>
+        <span><i style="background:#0E9BD8"></i>Главная (результат)</span>
+      </div>
+    </div>
+    <div class="acard">
+      <h3>Аналитическая записка · фрагмент</h3>
+      <div class="sub">М1. Факты / интерпретации / гипотезы разведены явно.</div>
+      <div class="note-doc">
+        <h4>Рынок и сегмент</h4>
+        <ul>
+          <li><span class="tag-f">Факт:</span> рынок носимых устройств РФ ~ растёт двузначно; здоровье — топ-сценарий использования.</li>
+          <li><span class="tag-i">Интерпретация:</span> покупатель платит за <i>проактивность</i>, а не за датчики как таковые.</li>
+          <li><span class="tag-h">Гипотеза:</span> подписку продлевают те, кто за 14 дней получил ≥3 полезные проактивные подсказки.</li>
+        </ul>
+        <h4>Конкуренты (FCM)</h4>
+        <ul>
+          <li><span class="tag-f">Факт:</span> у 4 из 5 конкурентов нет голосового проактивного агента — это <b>дифференциатор</b>.</li>
+          <li><span class="tag-i">Интерпретация:</span> точность пульса/сна — «гигиена», по ней не выиграть.</li>
+        </ul>
+        <h4>JTBD (из интервью)</h4>
+        <ul>
+          <li><b>Job:</b> «помоги мне не выгореть, не заставляя меня думать об этом».</li>
+          <li><b>Силы:</b> Push — усталость; Pull — спокойствие; Inertia — привычка к телефону; Anxiety — «ещё один гаджет заряжать».</li>
+        </ul>
+        <p style="margin-top:12px"><a class="btn sm" href="#finmodel">→ Перейти к финмодели и расчётам</a></p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- FINMODEL -->
+<section id="finmodel" class="alt"><div class="wrap">
+  <span class="eyebrow">Финмодель · «как в Jupyter, только в браузере»</span>
+  <h2>Стоит ли запускать «Пульс»? Считаем NPV и риск</h2>
+  <p class="sec-lead">Артефакт М2: дисконтированная модель на 3 года. Двигайте допущение — NPV пересчитывается вживую.
+    Tornado показывает, какой драйвер решает; Монте-Карло — насколько решение устойчиво к неопределённости;
+    корреляции — что с чем связано в данных. Все цифры синтетические, для демонстрации механики.</p>
+
+  <div class="cards">
+    <div class="acard">
+      <h3>NPV проекта</h3>
+      <div class="sub">Ставка дисконтирования 22% · горизонт 3 года · стартовый capex 80 млн ₽</div>
+      <div class="kpis">
+        <div class="kpi"><b id="kpiNpv">—</b><span>NPV, млн ₽</span></div>
+        <div class="kpi"><b id="kpiIrr">—</b><span>Прибыль года 3, млн ₽</span></div>
+        <div class="kpi"><b id="kpiSubs">—</b><span>Активных подписок, год 3</span></div>
+      </div>
+      <div class="ctrl"><label>Конверсия в подписку: <b id="convVal">40%</b></label>
+        <input id="conv" type="range" min="15" max="60" value="40"></div>
+      <div class="ctrl"><label>ARPU подписки, ₽/мес: <b id="arpuVal">390</b></label>
+        <input id="arpu" type="range" min="200" max="650" value="390" step="10"></div>
+      <svg id="npvChart" viewBox="0 0 520 200"></svg>
+    </div>
+
+    <div class="acard">
+      <h3>Tornado · чувствительность NPV</h3>
+      <div class="sub">±20% по каждому драйверу, остальное на базе. Сверху — что решает сильнее.</div>
+      <svg id="tornado" viewBox="0 0 520 250"></svg>
+      <div class="legend"><span><i style="background:#5FD24A"></i>драйвер растёт → NPV ↑</span><span><i style="background:#0E9BD8"></i>драйвер растёт → NPV ↓</span></div>
+    </div>
+
+    <div class="acard">
+      <h3>Монте-Карло · распределение NPV</h3>
+      <div class="sub">4000 прогонов, драйверы заданы диапазонами. P10 / P50 / P90.</div>
+      <svg id="mc" viewBox="0 0 520 220"></svg>
+      <div class="kpis" style="margin-top:8px">
+        <div class="kpi"><b id="p10">—</b><span>P10 (пессим.), млн ₽</span></div>
+        <div class="kpi"><b id="p50">—</b><span>медиана, млн ₽</span></div>
+        <div class="kpi"><b id="p90">—</b><span>P90 (оптим.), млн ₽</span></div>
+      </div>
+      <div class="kpi" style="margin-top:10px;background:#eafaf0"><b id="ppos">—</b><span>вероятность NPV &gt; 0</span></div>
+    </div>
+
+    <div class="acard">
+      <h3>Корреляции драйверов</h3>
+      <div class="sub">Матрица из «EDA» — что связано в данных и с итоговым NPV.</div>
+      <svg id="corr" viewBox="0 0 520 250"></svg>
+    </div>
+  </div>
+</div></section>
+
+<!-- DECK -->
+<section id="deck"><div class="wrap">
+  <span class="eyebrow">Финал · презентация-защита</span>
+  <h2>Агент собирает защиту в MARP-шаблоне</h2>
+  <p class="sec-lead">Из накопленных артефактов агент верстает 5-минутную защиту по шаблону заказчика
+    (синий→зелёный градиент, секционные слайды). Листайте стрелками или кнопками.</p>
+  <div class="deck">
+    <div class="slidebox" id="slidebox"></div>
+    <div class="nav"><button id="prev">‹</button><span id="pageno">1 / 8</span><button id="next">›</button></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div>
+    <div class="logo" style="color:#fff;margin-bottom:8px"><div class="mark"></div><div>DDDM · Сквозная практика<small style="color:#8fc4d8">пристрелочный набор v0.1</small></div></div>
+    <div style="max-width:46ch;color:#9fd4e6">Демо для согласования формата. Цифры и продукт вымышленные.
+      Шаблон промптов и шаги — для обсуждения и доработки по комментариям.</div>
+  </div>
+  <div>
+    <div class="lbl" style="color:#5fd2a0">Что дальше</div>
+    <ul style="padding-left:18px;color:#bfe6f2">
+      <li>добавить реальный MARP-шаблон заказчика</li>
+      <li>подключить грейдер-промпты по каждому артефакту</li>
+      <li>связать с тренажёрами LMS (SCORM)</li>
+    </ul>
+  </div>
+</div></footer>
+
+<div class="tt" id="tt"></div>
+<div class="toast" id="toast">Промпт скопирован</div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const fmt=n=>n.toLocaleString('ru-RU');
+const toast=(m)=>{const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1600);};
+function tip(el,html){el.addEventListener('mousemove',e=>{const t=$('#tt');t.innerHTML=html(el);t.style.opacity=1;t.style.left=(e.clientX+14)+'px';t.style.top=(e.clientY-10)+'px';});el.addEventListener('mouseleave',()=>$('#tt').style.opacity=0);}
+
+/* ---------- PROGRAM STEPS ---------- */
+const STEPS=[
+ {idx:'0',t:'Дерево метрик продукта',m:'Предматериалы',art:'mermaid дерево',
+  goal:'Разложить главную метрику результата на управляемые драйверы. База для всех гипотез и финмодели.',
+  proc:['Спрашивает у студента продукт, аудиторию и бизнес-цель квартала.',
+        'Формирует промпт дерева и просит запустить в DeepSeek.',
+        'Принимает ответ, классифицирует метрики: опережающие / расчётные / главная.',
+        'Рендерит дерево в mermaid и выкладывает .md + .png.',
+        'Пауза: «проверь связи и формулы — что правим?»'],
+  prompt:`Ты — продуктовый аналитик. Помоги построить дерево метрик для продукта.
+Продукт: умные часы с проактивным ИИ-агентом «Пульс».
+Бизнес-цель квартала: рост выручки от подписки за счёт удержания, без роста CAC.
+
+Сделай:
+1) Назови ОДНУ главную (запаздывающую) метрику результата.
+2) 4–6 опережающих (управляемых) метрик — листья дерева.
+3) Расчётные метрики между ними и формулы связи.
+Формат ответа: таблица [метрика | тип | формула] + список связей "A → B".
+Не выдумывай данные — только структуру и формулы.`},
+ {idx:'1',t:'Бизнес-вопрос и исследование рынка',m:'Модуль 1.2',art:'Lean Canvas + лонглист',
+  goal:'Сформулировать 2–3 вопроса исследования и собрать лонглист «Проблема × Сегмент».',
+  proc:['Уточняет рынок/домен и фиксирует 2–3 ключевых вопроса.',
+        'Выдаёт промпт рыночного обзора для Perplexity / Deep Research.',
+        'Просит студента отделить факты от интерпретаций (правило The Mom Test).',
+        'Собирает Product Vision (шаблон Мура) и Lean Canvas в .doc.',
+        'Пауза на ревью лонглиста и приоритезации сегментов.'],
+  prompt:`Проведи обзор рынка для продукта «умные часы с проактивным ИИ-агентом».
+Дай по пунктам, ОТДЕЛЯЯ факты от оценок:
+1) Размер и динамика рынка носимых устройств (со ссылками на источники).
+2) Топ-3 сценария использования и боли в каждом.
+3) Лонглист «Проблема × Сегмент» (мин. 6 пар) с оценкой остроты 1–5.
+Помечай каждое утверждение: [ФАКТ+источник] / [ИНТЕРПРЕТАЦИЯ] / [ГИПОТЕЗА].
+Если данных нет — пиши "нет данных", не выдумывай.`},
+ {idx:'2',t:'Конкурентный анализ (FCM)',m:'Модуль 1.3',art:'Feature Comparison Matrix',
+  goal:'Отделить «гигиену» от дифференциаторов и выбрать ключевую метрику для бенчмаркинга.',
+  proc:['Просит список 4–6 конкурентов или находит их промптом.',
+        'Строит Feature Comparison Matrix по функциям.',
+        'Размечает: гигиена vs дифференциатор.',
+        'Фиксирует ключевую метрику сравнения и бенчмарки.',
+        'Пауза: «согласен с дифференциаторами? что добавить?»'],
+  prompt:`Сравни наш продукт «Пульс» с конкурентами по носимым устройствам.
+Построй Feature Comparison Matrix:
+- строки — функции (точность пульса, сон, проактивные подсказки, голосовой агент, автономность, цена подписки);
+- столбцы — мы + 4 конкурента.
+Для каждой функции пометь: [ГИГИЕНА] (нужна всем) или [ДИФФЕРЕНЦИАТОР] (выделяет).
+В конце: одна ключевая метрика, по которой честно бенчмаркить, и почему.`},
+ {idx:'3',t:'Интервью и JTBD',m:'Модуль 1.4',art:'JTBD + 4 силы + CJM',
+  goal:'Вытащить работы (jobs), боли и силы переключения из транскрипций интервью.',
+  proc:['Если нет респондентов — генерирует имитацию интервью по промпту (с дисклеймером).',
+        'Принимает транскрипцию, извлекает топ-5 Jobs to be Done.',
+        'Размечает 4 силы: Push / Pull / Inertia / Anxiety.',
+        'Строит As-is CJM и список 3–5 проверяемых гипотез.',
+        'Пауза на проверку инсайтов против реальных слов респондента.'],
+  prompt:`Проанализируй транскрипцию глубинного интервью (вставлю ниже).
+Выдели:
+1) Топ-5 Jobs to be Done (формулировка "когда…, я хочу…, чтобы…").
+2) 4 силы переключения: Push, Pull, Inertia, Anxiety — цитатами из текста.
+3) As-is CJM: этапы текущего решения боли.
+4) 3–5 ПРОВЕРЯЕМЫХ гипотез (с метрикой проверки).
+Опирайся только на сказанное. Где домысливаешь — помечай [ИНТЕРПРЕТАЦИЯ].
+
+ТРАНСКРИПЦИЯ:
+"""<сюда агент подставляет транскрипцию>"""`},
+ {idx:'4',t:'Внешние факторы + аналитическая записка',m:'Модуль 1.5–1.6',art:'Записка, .pdf',
+  goal:'Собрать матрицу внешних факторов и свести всё в аналитическую записку из 6 разделов.',
+  proc:['Строит матрицу: сезонность, конкуренты, макро, алгоритмы платформ.',
+        'Подтягивает артефакты шагов 1–3 из памяти.',
+        'Собирает записку: рынок, конкуренты, JTBD, факторы, гипотезы, вывод.',
+        'Жёстко разводит ФАКТ / ИНТЕРПРЕТАЦИЯ / ГИПОТЕЗА.',
+        'Экспортирует .pdf и делает паузу на финальное ревью записки.'],
+  prompt:`Собери аналитическую записку (1–2 стр.) из наших артефактов.
+Структура (ровно 6 разделов):
+1. Бизнес-вопрос и рынок
+2. Конкуренты и дифференциаторы
+3. JTBD и силы переключения
+4. Матрица внешних факторов (сезонность / конкуренты / макро / платформы)
+5. Проверяемые гипотезы (с метрикой)
+6. Вывод и рекомендация к финмодели
+В каждом пункте маркируй [ФАКТ]/[ИНТЕРПРЕТАЦИЯ]/[ГИПОТЕЗА].
+Тон — сухой, для принятия решения.`},
+ {idx:'5',t:'Данные, EDA и финмодель',m:'Модуль 2',art:'Jupyter .ipynb + графики',
+  goal:'Построить дисконтированную модель, тест чувствительности и оценку риска (NPV, Tornado, Монте-Карло).',
+  proc:['Даёт студенту учебный датасет и промпт авто-EDA для Jupyter.',
+        'Помогает собрать unit-экономику и 3-летнюю модель доходов/затрат.',
+        'Считает NPV, строит Tornado по драйверам.',
+        'Запускает Монте-Карло и корреляции, объясняет результат словами.',
+        'Пауза: «какие допущения меняем перед защитой?» (см. интерактив ниже).'],
+  prompt:`Ты — финансовый аналитик в Jupyter. По датасету продаж и подписок:
+1) Сделай авто-EDA (пропуски, выбросы, распределения, корреляции) — кодом pandas.
+2) Собери 3-летнюю модель: выручка устройства + подписка − CAC − постоянные.
+3) Посчитай NPV при ставке 22% и стартовом capex 80 млн ₽.
+4) Построй Tornado: ±20% по ARPU, конверсии, retention, CAC, объёму, марже.
+5) Монте-Карло (4000 прогонов) → распределение NPV, P10/P50/P90, P(NPV>0).
+Каждый график сопровождай выводом в 1 предложение для слайда.`},
+ {idx:'6',t:'Презентация-защита',m:'Финал',art:'MARP-дек, .pdf',
+  goal:'Собрать 5-минутную защиту по шаблону заказчика из всех артефактов.',
+  proc:['Подтягивает все артефакты шагов 0–5 из памяти.',
+        'Верстает MARP-дек по шаблону: цели → рынок → JTBD → модель → риск → вывод.',
+        'Вставляет ключевые графики и одно-предложенные выводы.',
+        'Экспортирует .pdf и (опц.) генерирует структуру 5-минутного видео.',
+        'Пауза: финальное ревью перед сдачей и ИИ-грейдингом.'],
+  prompt:`Собери защитную презентацию (8 слайдов, MARP) по шаблону заказчика.
+Слайды: 1) титул 2) бизнес-вопрос 3) рынок и сегмент 4) дифференциаторы
+5) JTBD-инсайт 6) финмодель (NPV) 7) риск (Монте-Карло) 8) вывод и шаги.
+Каждый слайд — заголовок + 3 буллета максимум + 1 цифра/график.
+Стиль — градиент синий→зелёный, крупная типографика. Выдай в формате Markdown для MARP.`}
+];
+function renderSteps(){
+  const c=$('#steps');
+  c.innerHTML=STEPS.map((s,i)=>`
+   <div class="step${i===0?' open':''}" data-i="${i}">
+     <div class="head">
+       <div class="idx">${s.idx}</div>
+       <div class="ttl"><h3>${s.t}</h3><span>${s.m} · цель: ${s.goal}</span></div>
+       <div class="art">📎 ${s.art}</div>
+       <div class="tog">+</div>
+     </div>
+     <div class="body">
+       <div class="grid">
+         <div>
+           <div class="lbl">Что делает агент</div>
+           <ol class="proc">${s.proc.map(p=>`<li>${p}</li>`).join('')}</ol>
+           <div class="pause"><b>⏸ Пауза на ревью.</b> Агент не идёт дальше, пока студент не подтвердит артефакт.</div>
+         </div>
+         <div>
+           <div class="lbl">Промпт шага</div>
+           <div class="prompt"><button class="copy" data-i="${i}">копировать</button>${s.prompt.replace(/</g,'&lt;')}</div>
+         </div>
+       </div>
+     </div>
+   </div>`).join('');
+  $$('.step .head').forEach(h=>h.addEventListener('click',e=>{
+    if(e.target.classList.contains('copy'))return;
+    h.parentElement.classList.toggle('open');}));
+  $$('.copy').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();
+    navigator.clipboard?.writeText(STEPS[b.dataset.i].prompt);
+    toast('Промпт шага «'+STEPS[b.dataset.i].t+'» скопирован');}));
+}
+renderSteps();
+
+/* ---------- FINANCE ENGINE ---------- */
+const BASE={units:[12000,30000,60000],price:14900,devMargin:0.35,conv:0.40,arpu:390,
+  ret:0.65,cac:1800,fixed:[90,120,150],capex:80,rate:0.22};
+function model(p){
+  let activePrev=0,years=[];
+  for(let t=0;t<3;t++){
+    const u=p.units[t];
+    const devGross=(u*p.price*p.devMargin)/1e6;            // млн
+    const newSubs=u*p.conv;
+    const active=newSubs+activePrev*p.ret;
+    const subRev=(active*p.arpu*12)/1e6;
+    const cac=(newSubs*p.cac)/1e6;
+    const profit=devGross+subRev-cac-p.fixed[t];
+    years.push({profit,active,subRev,devGross});
+    activePrev=active;
+  }
+  let npv=-p.capex;
+  years.forEach((y,t)=>npv+=y.profit/Math.pow(1+p.rate,t+1));
+  return {npv,years};
+}
+function cur(){return Object.assign({},BASE,{conv:+$('#conv').value/100,arpu:+$('#arpu').value});}
+
+/* NPV chart: bars per year (discounted profit) + capex */
+function drawNpv(){
+  const p=cur(),r=model(p);
+  $('#kpiNpv').textContent=Math.round(r.npv);
+  $('#kpiIrr').textContent=Math.round(r.years[2].profit);
+  $('#kpiSubs').textContent=fmt(Math.round(r.years[2].active));
+  $('#convVal').textContent=Math.round(p.conv*100)+'%';
+  $('#arpuVal').textContent=p.arpu;
+  const bars=[{l:'Capex',v:-p.capex,c:'#0E9BD8'}].concat(r.years.map((y,t)=>({l:'Год '+(t+1),v:y.profit/Math.pow(1+p.rate,t+1),c:'#5FD24A'})));
+  bars.push({l:'NPV',v:r.npv,c:r.npv>=0?'#1f9d57':'#d8623e',npv:true});
+  const W=520,H=200,pad=30,bw=70,gap=22,base=H-34;
+  const max=Math.max(...bars.map(b=>Math.abs(b.v)),60);
+  const sc=v=>v/max*78;
+  let svg=`<line x1="20" y1="${base}" x2="${W-10}" y2="${base}" stroke="#cfe2e9"/>`;
+  bars.forEach((b,i)=>{
+    const x=40+i*(bw+gap), h=sc(Math.abs(b.v)), y=b.v>=0?base-h:base;
+    svg+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="6" fill="${b.c}" opacity="${b.npv?1:.92}"></rect>`;
+    svg+=`<text x="${x+bw/2}" y="${b.v>=0?y-6:y+h+14}" font-size="12" font-weight="700" text-anchor="middle" fill="#0e2430">${Math.round(b.v)}</text>`;
+    svg+=`<text x="${x+bw/2}" y="${base+16}" font-size="11" text-anchor="middle" fill="#5a7384">${b.l}</text>`;
+  });
+  $('#npvChart').innerHTML=svg;
+}
+
+/* Tornado */
+function drawTornado(){
+  const drivers=[['Конверсия','conv'],['ARPU','arpu'],['Retention','ret'],['CAC','cac'],['Объём продаж','units'],['Маржа устройства','devMargin']];
+  const base=model(BASE).npv;
+  const rows=drivers.map(([name,key])=>{
+    const lo=JSON.parse(JSON.stringify(BASE)),hi=JSON.parse(JSON.stringify(BASE));
+    const f=0.2;
+    if(key==='units'){lo.units=BASE.units.map(u=>u*(1-f));hi.units=BASE.units.map(u=>u*(1+f));}
+    else{lo[key]=BASE[key]*(1-f);hi[key]=BASE[key]*(1+f);}
+    return {name,lo:model(lo).npv-base,hi:model(hi).npv-base};
+  }).sort((a,b)=>Math.max(Math.abs(b.lo),Math.abs(b.hi))-Math.max(Math.abs(a.lo),Math.abs(a.hi)));
+  const W=520,H=250,cx=270,mx=Math.max(...rows.flatMap(r=>[Math.abs(r.lo),Math.abs(r.hi)]));
+  const sc=v=>v/mx*180, rh=30;
+  let svg=`<line x1="${cx}" y1="6" x2="${cx}" y2="${H-22}" stroke="#cfe2e9"/><text x="${cx}" y="${H-8}" font-size="11" text-anchor="middle" fill="#5a7384">базовый NPV ${Math.round(base)} млн ₽</text>`;
+  rows.forEach((r,i)=>{
+    const y=12+i*rh;
+    [[r.lo,'#0E9BD8'],[r.hi,'#5FD24A']].forEach(([v,col])=>{
+      const w=sc(v);const x=v>=0?cx:cx+w;
+      svg+=`<rect class="tb" data-n="${r.name}" data-v="${Math.round(v)}" x="${x}" y="${y}" width="${Math.abs(w)}" height="${rh-9}" rx="4" fill="${col}"></rect>`;
+    });
+    svg+=`<text x="6" y="${y+rh-15}" font-size="12" font-weight="600" fill="#0e2430">${r.name}</text>`;
+  });
+  $('#tornado').innerHTML=svg;
+  $$('#tornado .tb').forEach(el=>tip(el,e=>`${e.dataset.n}: ΔNPV ${e.dataset.v>0?'+':''}${e.dataset.v} млн ₽`));
+}
+
+/* Monte Carlo */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function drawMC(){
+  const rnd=mulberry32(42),N=4000,res=[];
+  const tri=(lo,mid,hi)=>{const u=rnd();const c=(mid-lo)/(hi-lo);return u<c?lo+Math.sqrt(u*(hi-lo)*(mid-lo)):hi-Math.sqrt((1-u)*(hi-lo)*(hi-mid));};
+  for(let i=0;i<N;i++){
+    const p=JSON.parse(JSON.stringify(BASE));
+    p.conv=tri(0.25,0.40,0.52); p.arpu=tri(300,390,520); p.ret=tri(0.5,0.65,0.78);
+    p.cac=tri(1300,1800,2600); p.units=BASE.units.map(u=>u*tri(0.7,1,1.3));
+    res.push(model(p).npv);
+  }
+  res.sort((a,b)=>a-b);
+  const q=t=>res[Math.floor(t*N)];
+  $('#p10').textContent=Math.round(q(.1));$('#p50').textContent=Math.round(q(.5));$('#p90').textContent=Math.round(q(.9));
+  const pos=res.filter(v=>v>0).length/N;$('#ppos').textContent=Math.round(pos*100)+'%';
+  // histogram
+  const min=res[0],max=res[N-1],BINS=34,binw=(max-min)/BINS,h=new Array(BINS).fill(0);
+  res.forEach(v=>{let b=Math.min(BINS-1,Math.floor((v-min)/binw));h[b]++;});
+  const W=520,H=220,base=H-26,hmax=Math.max(...h),bw=W/BINS;
+  let svg=`<line x1="0" y1="${base}" x2="${W}" y2="${base}" stroke="#cfe2e9"/>`;
+  const zx=(0-min)/(max-min)*W;
+  svg+=`<line x1="${zx}" y1="6" x2="${zx}" y2="${base}" stroke="#d8623e" stroke-dasharray="4 3"/><text x="${zx+4}" y="16" font-size="10" fill="#d8623e">NPV=0</text>`;
+  h.forEach((c,i)=>{const bh=c/hmax*(base-12);const x=i*bw,binc=min+(i+.5)*binw;
+    svg+=`<rect x="${x+1}" y="${base-bh}" width="${bw-1.5}" height="${bh}" fill="${binc<0?'#0E9BD8':'#5FD24A'}" opacity=".85"></rect>`;});
+  [['#5fd2a0','P10',q(.1)],['#fff','P50',q(.5)],['#5fd2a0','P90',q(.9)]].forEach(([c,l,v])=>{
+    const x=(v-min)/(max-min)*W;svg+=`<line x1="${x}" y1="6" x2="${x}" y2="${base}" stroke="#0e2430" stroke-width="1.4"/><text x="${x}" y="${base+16}" font-size="10" text-anchor="middle" fill="#5a7384">${l} ${Math.round(v)}</text>`;});
+  $('#mc').innerHTML=svg;
+}
+
+/* Correlation heatmap */
+function drawCorr(){
+  const labels=['Конв.','ARPU','Retention','CAC','Объём','NPV'];
+  const M=[
+   [1,.18,.42,-.12,.30,.71],
+   [.18,1,.27,-.05,.10,.58],
+   [.42,.27,1,-.09,.16,.66],
+   [-.12,-.05,-.09,1,-.20,-.44],
+   [.30,.10,.16,-.20,1,.49],
+   [.71,.58,.66,-.44,.49,1]];
+  const n=labels.length,cell=58,ox=78,oy=14,W=520,H=250;
+  const col=v=>{if(v>=0){const t=v;return `rgba(${Math.round(95+ (14-95)*0)},180,80,${.15+t*.85})`;}};
+  let svg='';
+  for(let i=0;i<n;i++)for(let j=0;j<n;j++){
+    const v=M[i][j];const x=ox+j*cell,y=oy+i*cell;
+    const c = v>=0 ? `rgba(45,160,120,${.12+v*.8})` : `rgba(14,155,216,${.12+(-v)*.8})`;
+    svg+=`<rect class="cc" data-t="${labels[i]}↔${labels[j]}: r=${v.toFixed(2)}" x="${x}" y="${y}" width="${cell-3}" height="${cell-3}" rx="5" fill="${c}"></rect>`;
+    svg+=`<text x="${x+(cell-3)/2}" y="${y+(cell-3)/2+4}" font-size="11" font-weight="600" text-anchor="middle" fill="${Math.abs(v)>.55?'#fff':'#0e2430'}">${v.toFixed(2)}</text>`;
+  }
+  labels.forEach((l,i)=>{svg+=`<text x="${ox-6}" y="${oy+i*cell+cell/2}" font-size="11" text-anchor="end" fill="#5a7384">${l}</text>`;
+    svg+=`<text x="${ox+i*cell+cell/2}" y="${oy+n*cell+14}" font-size="11" text-anchor="middle" fill="#5a7384">${l}</text>`;});
+  $('#corr').innerHTML=svg;
+  $$('#corr .cc').forEach(el=>tip(el,e=>e.dataset.t));
+}
+
+/* Metric tree */
+function drawTree(){
+  const W=520,H=300;
+  const N={
+   rev:{x:260,y:30,w:170,t:'Выручка от подписки',ty:'Главная',c:'#0E9BD8'},
+   active:{x:120,y:110,w:140,t:'Активные подписки',ty:'Расчётная',c:'#2BC0C8'},
+   arpu:{x:330,y:110,w:120,t:'ARPU',ty:'Расчётная',c:'#2BC0C8'},
+   conv:{x:30,y:200,w:120,t:'Конверсия в подписку',ty:'Опережающая',c:'#7BEC5E'},
+   ret:{x:170,y:200,w:120,t:'Retention 14d',ty:'Опережающая',c:'#7BEC5E'},
+   tips:{x:310,y:200,w:130,t:'Полезных подсказок / нед.',ty:'Опережающая',c:'#7BEC5E'},
+   price:{x:450,y:200,w:60,t:'Тариф',ty:'Опережающая',c:'#7BEC5E'}
+  };
+  const E=[['conv','active'],['ret','active'],['active','rev'],['arpu','rev'],['tips','arpu'],['price','arpu']];
+  let svg='';
+  E.forEach(([a,b])=>{const A=N[a],B=N[b];svg+=`<path d="M${A.x+A.w/2},${A.y} C${A.x+A.w/2},${A.y-30} ${B.x+B.w/2},${B.y+50} ${B.x+B.w/2},${B.y+34}" fill="none" stroke="#bcd9e2" stroke-width="2"/>`;});
+  Object.values(N).forEach(nd=>{
+    svg+=`<g class="tn" data-t="${nd.ty}"><rect x="${nd.x}" y="${nd.y}" width="${nd.w}" height="46" rx="11" fill="#fff" stroke="${nd.c}" stroke-width="2.2"/>
+    <rect x="${nd.x}" y="${nd.y}" width="6" height="46" rx="3" fill="${nd.c}"/>
+    <text x="${nd.x+16}" y="${nd.y+19}" font-size="12.5" font-weight="700" fill="#0e2430">${nd.t}</text>
+    <text x="${nd.x+16}" y="${nd.y+35}" font-size="10.5" fill="#7a93a1">${nd.ty}</text></g>`;
+  });
+  const el=$('#mtree');el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${svg}</svg>`;
+}
+
+/* ---------- DECK ---------- */
+const SLIDES=[
+ `<div class="slide cover on"><span class="k">Karpov · DDDM · защита проекта</span><h2>«Пульс» — умные часы с проактивным ИИ-агентом</h2><p style="font-size:18px;max-width:40ch">Стоит ли запускать? Решение на основе данных, исследований и финмодели.</p><div class="pg">1 / 8</div></div>`,
+ `<div class="slide"><span class="k">Бизнес-вопрос</span><h2 style="color:#063">Запускать ли продукт и на чём зарабатывать?</h2><ul><li>Рынок носимых растёт двузначно, здоровье — топ-сценарий</li><li>Гипотеза монетизации: устройство + подписка на проактивные ИИ-функции</li><li>Вопрос решения: положительный ли NPV при реалистичных допущениях?</li></ul><div class="pg">2 / 8</div></div>`,
+ `<div class="slide"><span class="k">Рынок и сегмент</span><h2 style="color:#063">Платят за проактивность, а не за датчики</h2><div class="cols"><div><b style="font-size:30px">3</b><div>топ-сценария: сон, нагрузка, восстановление</div></div><div><b style="font-size:30px">5/5</b><div>сегментов назвали «не выгореть» ключевой работой</div></div></div><div class="pg">3 / 8</div></div>`,
+ `<div class="slide"><span class="k">Дифференциаторы (FCM)</span><h2 style="color:#063">Голосовой проактивный агент — то, чего нет у 4/5</h2><ul><li>Точность пульса/сна — гигиена, по ней не выиграть</li><li>Дифференциатор — проактивные голосовые подсказки</li><li>Ключевая метрика бенчмаркинга — Retention 14 дней</li></ul><div class="pg">4 / 8</div></div>`,
+ `<div class="slide"><span class="k">JTBD · инсайт интервью</span><h2 style="color:#063">«Помоги не выгореть, не заставляя думать об этом»</h2><ul><li>Push — усталость и тревога о здоровье</li><li>Pull — спокойствие и автопилот</li><li>Anxiety — «ещё один гаджет заряжать»</li></ul><div class="pg">5 / 8</div></div>`,
+ `<div class="slide cover"><span class="k">Финмодель</span><div class="big" id="deckNpv">+— млн ₽</div><h2 style="color:#fff;font-size:24px">NPV при ставке 22% за 3 года</h2><p>Драйвер №1 по чувствительности — конверсия в подписку.</p><div class="pg">6 / 8</div></div>`,
+ `<div class="slide"><span class="k">Риск · Монте-Карло</span><h2 style="color:#063">Решение устойчиво к неопределённости</h2><div class="cols"><div><b style="font-size:30px" id="deckPpos">—</b><div>вероятность NPV &gt; 0 (4000 прогонов)</div></div><div><b style="font-size:30px" id="deckP10">—</b><div>NPV в пессимистичном P10, млн ₽</div></div></div><div class="pg">7 / 8</div></div>`,
+ `<div class="slide cover"><span class="k">Вывод</span><h2 style="color:#063">Запускаем — с фокусом на конверсию и удержание</h2><ul><li>Положительный NPV и P(NPV&gt;0) выше порога</li><li>Рычаг №1 — конверсия в подписку (Tornado)</li><li>Следующий шаг — пилот на 1 городе, проверка гипотез удержания</li></ul><div class="pg">8 / 8</div></div>`
+];
+let cur_s=0;
+function renderDeck(){
+  $('#slidebox').innerHTML=SLIDES.join('');
+  const r=model(BASE);
+  const rnd=mulberry32(42),N=4000,res=[];const tri=(lo,mid,hi)=>{const u=rnd();const c=(mid-lo)/(hi-lo);return u<c?lo+Math.sqrt(u*(hi-lo)*(mid-lo)):hi-Math.sqrt((1-u)*(hi-lo)*(hi-mid));};
+  for(let i=0;i<N;i++){const p=JSON.parse(JSON.stringify(BASE));p.conv=tri(0.25,0.40,0.52);p.arpu=tri(300,390,520);p.ret=tri(0.5,0.65,0.78);p.cac=tri(1300,1800,2600);p.units=BASE.units.map(u=>u*tri(0.7,1,1.3));res.push(model(p).npv);}
+  res.sort((a,b)=>a-b);
+  if($('#deckNpv'))$('#deckNpv').textContent=(r.npv>=0?'+':'')+Math.round(r.npv)+' млн ₽';
+  if($('#deckPpos'))$('#deckPpos').textContent=Math.round(res.filter(v=>v>0).length/N*100)+'%';
+  if($('#deckP10'))$('#deckP10').textContent=Math.round(res[Math.floor(.1*N)]);
+  show(0);
+}
+function show(i){cur_s=(i+SLIDES.length)%SLIDES.length;$$('.slide').forEach((s,k)=>s.classList.toggle('on',k===cur_s));$('#pageno').textContent=(cur_s+1)+' / '+SLIDES.length;}
+$('#prev').onclick=()=>show(cur_s-1);$('#next').onclick=()=>show(cur_s+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')show(cur_s+1);if(e.key==='ArrowLeft')show(cur_s-1);});
+
+/* ---------- init ---------- */
+$('#conv').addEventListener('input',drawNpv);
+$('#arpu').addEventListener('input',drawNpv);
+drawNpv();drawTornado();drawMC();drawCorr();drawTree();renderDeck();
+</script>
+</body>
+</html>
