@@ -148,16 +148,41 @@ footer a{color:#8fe3ff}
   padding:11px 18px;border-radius:11px;font-size:13.5px;opacity:0;transition:.25s;z-index:90;box-shadow:var(--shadow)}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .banner{background:var(--grad-soft);border-bottom:1px solid var(--line);font-size:13px;color:#0e6a8c;text-align:center;padding:8px}
+/* checklist */
+.cl-top{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:24px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 22px;box-shadow:var(--shadow-s)}
+.cl-top .pct{font-size:40px;font-weight:800;letter-spacing:-.02em;color:var(--blue-d);min-width:96px}
+.cl-bar{flex:1;min-width:200px}
+.cl-bar .track{height:12px;border-radius:8px;background:#e8f2f6;overflow:hidden}
+.cl-bar .fill{height:100%;width:0;background:var(--grad);transition:.35s;border-radius:8px}
+.cl-bar small{color:var(--muted);font-size:12.5px;display:block;margin-top:7px}
+.cl-actions{display:flex;gap:8px;flex-wrap:wrap}
+.clgroup{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-s);margin-top:14px;overflow:hidden}
+.clgroup .gh{display:flex;align-items:center;gap:13px;padding:15px 20px;cursor:pointer}
+.clgroup .gh .gl{width:34px;height:34px;border-radius:10px;background:var(--grad-soft);color:var(--blue-d);font-weight:800;display:flex;align-items:center;justify-content:center}
+.clgroup .gh h3{margin:0;font-size:16.5px;flex:1}
+.clgroup .gh .cnt{font-size:12.5px;font-weight:700;color:#157a3a;background:#eafaf0;border:1px solid #cdeede;padding:4px 9px;border-radius:999px}
+.clgroup .gh .tog{font-size:20px;color:var(--muted);transition:.2s}
+.clgroup.open .gh .tog{transform:rotate(45deg)}
+.clgroup .gb{display:none;padding:4px 20px 16px;border-top:1px solid var(--line)}
+.clgroup.open .gb{display:block}
+.clitem{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid #f0f6f8;font-size:14px}
+.clitem:last-child{border-bottom:0}
+.clitem input{margin-top:3px;width:18px;height:18px;accent-color:var(--green-d);cursor:pointer;flex:0 0 auto}
+.clitem .txt{flex:1}.clitem .txt b{color:var(--blue-d)}
+.clitem.done .txt{color:#7a93a1;text-decoration:line-through;text-decoration-color:#bcd9e2}
+.badge{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:6px;margin-right:7px;vertical-align:1px}
+.badge.must{background:#0E9BD8;color:#fff}.badge.should{background:#cfeede;color:#157a3a}.badge.may{background:#eef2f4;color:#7a93a1}
 </style>
 </head>
 <body>
 
-<div class="banner">🧪 Пристрелочный демо-набор v0.1 · вымышленный сквозной проект «Пульс» · структура и промпты для обсуждения</div>
+<div class="banner">🧪 Пристрелочный набор v0.1 · чек-лист для агента-исполнителя + демо сквозного проекта «Пульс» · для обсуждения с разработчиком</div>
 
 <header class="top"><div class="wrap">
   <div class="logo"><div class="mark"></div><div>DDDM · Сквозная практика<small>Принятие решений на основе данных и ИИ</small></div></div>
   <nav class="menu">
     <a href="#how">Как работает</a>
+    <a href="#checklist">Чек-лист агента</a>
     <a href="#program">Программа</a>
     <a href="#artifacts">Артефакты</a>
     <a href="#finmodel">Финмодель</a>
@@ -173,13 +198,14 @@ footer a{color:#8fe3ff}
     на каждом шаге выдаёт промпт, собирает промежуточный артефакт (doc / pdf), делает паузу на ваше ревью —
     и только потом ведёт дальше. В финале — интерактивная презентация-защита в шаблоне заказчика.</p>
   <div class="cta">
-    <a class="btn solid" href="#program">▶ Пройти программу</a>
-    <a class="btn ghost" href="#finmodel">📊 Открыть финмодель</a>
-    <a class="btn ghost" href="#deck">🖥 Презентация-защита</a>
+    <a class="btn solid" href="#checklist">✅ Чек-лист агента-исполнителя</a>
+    <a class="btn ghost" href="#program">▶ Пройти программу</a>
+    <a class="btn ghost" href="#finmodel">📊 Финмодель</a>
+    <a class="btn ghost" href="#deck">🖥 Защита</a>
   </div>
   <div class="meta">
+    <div><b>49</b>пунктов чек-листа агента</div>
     <div><b>7</b>шагов сквозной практики</div>
-    <div><b>6</b>промежуточных артефактов</div>
     <div><b>4</b>интерактивных графика финмодели</div>
     <div><b>1</b>защита в MARP-шаблоне</div>
   </div>
@@ -200,6 +226,26 @@ footer a{color:#8fe3ff}
   </div>
   <div class="loopbar">🔁 Цикл повторяется на каждом шаге. Агент <b>фиксирует прогресс</b>, помнит, что уже сделано,
     и в конце <b>сам собирает</b> все артефакты в презентацию-защиту по шаблону заказчика.</div>
+</div></section>
+
+<!-- CHECKLIST -->
+<section id="checklist" class="alt"><div class="wrap">
+  <span class="eyebrow">Спецификация для разработчика агента</span>
+  <h2>Чек-лист агента-исполнителя</h2>
+  <p class="sec-lead">Definition of Done на уровень поведения: что агент в Telegram обязан уметь, чтобы
+    провести студента «от бизнес-вопроса до защиты». Программа шагов ещё уточняется — но эти способности
+    инвариантны. Отмечайте галочки; прогресс сохраняется в браузере. Полный текст —
+    <a href="https://github.com/wybaeb/dddm-ai-practice-demo/blob/main/CHECKLIST.md" target="_blank">CHECKLIST.md</a>.</p>
+  <div class="cl-top">
+    <div class="pct" id="clPct">0%</div>
+    <div class="cl-bar"><div class="track"><div class="fill" id="clFill"></div></div>
+      <small id="clHint">Готовность агента по обязательным (MUST) пунктам</small></div>
+    <div class="cl-actions">
+      <button class="btn sm" id="clAll">Отметить всё</button>
+      <button class="btn sm" id="clReset">Сбросить</button>
+    </div>
+  </div>
+  <div id="clGroups"></div>
 </div></section>
 
 <!-- PROGRAM -->
@@ -484,6 +530,99 @@ function renderSteps(){
     toast('Промпт шага «'+STEPS[b.dataset.i].t+'» скопирован');}));
 }
 renderSteps();
+
+/* ---------- CHECKLIST ---------- */
+const CL=[
+ {g:'A',t:'План занятия и память',items:[
+  ['A1','must','Загружает программу из репозитория и <b>держит её в памяти</b> всю сессию.'],
+  ['A2','must','Всегда знает текущий шаг и прогресс; по «где мы?» выдаёт статус N/М.'],
+  ['A3','must','Идёт по шагам <b>строго по порядку</b>, не перескакивает без завершения.'],
+  ['A4','must','Перед шагом проговаривает цель, что сделает и какой артефакт на выходе.'],
+  ['A5','should','Восстанавливает состояние после перерыва из STATE.md / manifest.json.'],
+  ['A6','should','Адаптирует промпт шага под продукт студента, сохраняя структуру.']]},
+ {g:'B',t:'Исследования по запросу',items:[
+  ['B1','must','Проводит обзор рынка, конкурентный анализ (FCM), разбор интервью (JTBD), внешние факторы.'],
+  ['B2','must','Использует веб-поиск / Deep Research для внешних фактов.'],
+  ['B3','must','Разводит <b>факт / интерпретацию / гипотезу</b> и помечает источники.'],
+  ['B4','must','Не выдумывает данные: нет источника → «нет данных».'],
+  ['B5','should','Прогоняет выводы через чек-лист валидации (источник, причинность, наблюдение).'],
+  ['B6','may','Генерирует синтетическое интервью по промпту с дисклеймером.']]},
+ {g:'C',t:'Взаимодействие и коррективы',items:[
+  ['C1','must','После шага — <b>пауза на ревью</b>: «утверждаем / правим?».'],
+  ['C2','must','Принимает правки и переделывает артефакт, сохраняя новую версию.'],
+  ['C3','must','Идёт дальше <b>только</b> после явного «ок».'],
+  ['C4','should','Ведёт лог коррективов (что просили, что изменилось).'],
+  ['C5','should','При противоречивой правке — один уточняющий вопрос, не наугад.'],
+  ['C6','may','Предлагает 1–2 альтернативы на развилках с рекомендацией.']]},
+ {g:'D',t:'Артефакты: сохранение и версии',items:[
+  ['D1','must','Сохраняет артефакт каждого шага по типу: исходный / промежуточный / финальный / демо / картинки.'],
+  ['D2','must','Единая схема имён <b>s&lt;шаг&gt;_&lt;артефакт&gt;_v&lt;версия&gt;</b>.'],
+  ['D3','must','Не перезаписывает утверждённую версию — правка = новая v(n+1).'],
+  ['D4','must','Ведёт реестр <b>manifest.json</b> (шаг, тип, путь, версия, статус ревью).'],
+  ['D5','must','Экспорт в .md/.doc/.pdf для текста, .png/.svg для графиков, .ipynb для модели.'],
+  ['D6','must','Выкладывает каждый артефакт <b>по ссылке</b>, открываемой из чата.'],
+  ['D7','should','Хранит демо-версии (превью, картинки слайдов) отдельно от рабочих.'],
+  ['D8','may','На финале — один скачиваемый пакет ZIP.']]},
+ {g:'E',t:'Статистика и финмодель',items:[
+  ['E1','must','Авто-EDA: пропуски, выбросы, распределения, описательные статистики.'],
+  ['E2','must','<b>Корреляционный анализ</b> драйверов (матрица + интерпретация).'],
+  ['E3','must','Юнит-экономика: ARPU, Churn, CAC, <b>LTV</b>, LTV/CAC, Payback.'],
+  ['E4','must','Финмодель: трафик → конверсия → выручка → расходы → <b>EBITDA</b>.'],
+  ['E5','must','<b>Точка безубыточности</b> по накопленному денежному потоку.'],
+  ['E6','must','<b>NPV</b> при ставке дисконтирования + окупаемость.'],
+  ['E7','must','Сценарии: base / optimistic / pessimistic.'],
+  ['E8','must','Чувствительность → <b>Tornado-chart</b> (±X% по драйверам, ранжирование).'],
+  ['E9','must','<b>Монте-Карло</b> ≥4000 симуляций: P5/P50/P95, вероятность прибыли / P(NPV&gt;0).'],
+  ['E10','must','Каждый расчёт — вывод в 1 предложение + график-картинка.'],
+  ['E11','should','Контроль допущений и численной устойчивости (диапазоны, сид).'],
+  ['E12','may','Проверка гипотез / A-B-сравнение, если требует кейс.']]},
+ {g:'F',t:'Презентация в шаблоне результатов',items:[
+  ['F1','must','Собирает защиту <b>из финальных и демо-артефактов</b>, а не заново.'],
+  ['F2','must','Верстает в <b>шаблоне заказчика</b> (MARP): фирменный стиль, секционные слайды.'],
+  ['F3','must','Структура: вопрос → рынок → дифференциаторы → JTBD → NPV → риск → вывод.'],
+  ['F4','must','Вставляет графики-картинки (Tornado, NPV, Монте-Карло).'],
+  ['F5','must','Экспорт в .pdf (+ исходный MARP .md).'],
+  ['F6','should','Структура 5-минутного видео-защиты (тайминг по слайдам).'],
+  ['F7','should','Финальная пауза на ревью перед сдачей на ИИ-грейдинг.']]},
+ {g:'G',t:'Качество и самопроверка',items:[
+  ['G1','must','Перед фиксацией прогоняет артефакт по критериям шага (мини-рубрика).'],
+  ['G2','should','Не закрывает шаг без обязательного под-артефакта (напр. картинки графика).'],
+  ['G3','should','Единый сквозной контекст: метрики → гипотезы → драйверы не противоречат.'],
+  ['G4','may','Финальный «критик»: все шаги закрыты, нет неподтверждённых утверждений.']]}
+];
+const CL_KEY='dddm_checklist';
+let clState=JSON.parse(localStorage.getItem(CL_KEY)||'{}');
+function clRender(){
+  $('#clGroups').innerHTML=CL.map((grp,gi)=>{
+    const total=grp.items.length, done=grp.items.filter(it=>clState[it[0]]).length;
+    return `<div class="clgroup${gi===0?' open':''}">
+      <div class="gh"><div class="gl">${grp.g}</div><h3>${grp.t}</h3>
+        <span class="cnt" data-g="${grp.g}">${done}/${total}</span><div class="tog">+</div></div>
+      <div class="gb">${grp.items.map(([id,lv,tx])=>`
+        <label class="clitem${clState[id]?' done':''}" data-id="${id}">
+          <input type="checkbox" ${clState[id]?'checked':''}>
+          <span class="txt"><span class="badge ${lv}">${lv.toUpperCase()}</span><b>${id}.</b> ${tx}</span>
+        </label>`).join('')}</div></div>`;}).join('');
+  $$('.clgroup .gh').forEach(h=>h.addEventListener('click',e=>{if(e.target.closest('.cnt'))return;h.parentElement.classList.toggle('open');}));
+  $$('.clitem input').forEach(inp=>inp.addEventListener('change',e=>{
+    const id=e.target.closest('.clitem').dataset.id;
+    clState[id]=e.target.checked;localStorage.setItem(CL_KEY,JSON.stringify(clState));clRefresh();}));
+  clRefresh();
+}
+function clRefresh(){
+  const must=CL.flatMap(g=>g.items).filter(i=>i[1]==='must');
+  const mDone=must.filter(i=>clState[i[0]]).length;
+  const pct=Math.round(mDone/must.length*100);
+  $('#clPct').textContent=pct+'%';$('#clFill').style.width=pct+'%';
+  const allDone=CL.flatMap(g=>g.items).filter(i=>clState[i[0]]).length;
+  $('#clHint').textContent=`Готовность по MUST: ${mDone}/${must.length} · всего отмечено ${allDone}`;
+  CL.forEach(grp=>{const c=document.querySelector(`.cnt[data-g="${grp.g}"]`);
+    if(c)c.textContent=grp.items.filter(it=>clState[it[0]]).length+'/'+grp.items.length;});
+  $$('.clitem').forEach(l=>l.classList.toggle('done',!!clState[l.dataset.id]));
+}
+$('#clAll').addEventListener('click',()=>{CL.flatMap(g=>g.items).forEach(i=>clState[i[0]]=true);localStorage.setItem(CL_KEY,JSON.stringify(clState));clRender();});
+$('#clReset').addEventListener('click',()=>{clState={};localStorage.removeItem(CL_KEY);clRender();});
+clRender();
 
 /* ---------- FINANCE ENGINE ---------- */
 const BASE={units:[12000,30000,60000],price:14900,devMargin:0.35,conv:0.40,arpu:390,
