@@ -153,8 +153,21 @@ Telegram обязан уметь, чтобы провести слушателя
 - [ ] **H9 (SHOULD)** Парсинг веба и OCR: `requests`/`httpx`, `beautifulsoup4`/`lxml`/`trafilatura`,
       `Pillow`/`pytesseract`, `tabula-py` (таблицы из PDF).
 - [ ] **H10 (MUST)** Секреты в переменных окружения: `PERPLEXITY_API_KEY` (один на Search API и Sonar),
-      ключ основного LLM-провайдера; (опц.) `TAVILY_API_KEY`/`BRAVE_API_KEY`.
+      ключ основного LLM-провайдера; (опц.) `TAVILY_API_KEY`/`BRAVE_API_KEY`, `SPEECH_API_KEY` (ASR, см. **H12**).
 - [ ] **H11 (MAY)** Доступ к API открытых данных: Росстат, World Bank, ЦБ РФ — для B/E, где нужны реальные ряды.
+- [ ] **H12 (SHOULD)** **Обработка голосовых сообщений.** Участник шлёт voice в Telegram (`.ogg`/Opus) →
+      агент декодирует (`ffmpeg`) и **транскрибирует** качественной ASR-моделью, дальше работает с текстом
+      как обычно. Требование — сильное распознавание **русской речи** с пунктуацией и нормализацией чисел.
+  > ⚠️ На роутере `agentplatform.ru` ASR-моделей сейчас **нет** (только text / image / rerank), поэтому
+  > транскрипция подключается **отдельным провайдером**. Кандидаты:
+  - **Yandex SpeechKit v3** — облако, топ по русскому, пунктуация/нормализация, длинные аудио.
+  - **SberSaluteSpeech API** / **GigaAM** (open-source ASR Сбера) — русский, согласуется с экосистемой
+    программы (Сбер/СберУниверситет); GigaAM можно self-host в sandbox.
+  - **OpenAI `gpt-4o-transcribe`** или **Whisper `large-v3`** (`faster-whisper` для self-host) — мультиязычно,
+    запускается прямо в песочнице **H2**.
+  - **Deepgram Nova-3** — если понадобится near-realtime / стриминг.
+  - Если позже на роутере появится OpenAI-совместимый audio-эндпоинт (`/v1/audio/transcriptions`) —
+    переключаемся на него одним изменением конфига (`SPEECH_API_KEY` в env, см. **H10**).
 
 **Среда (минимум):** Python ≥ 3.11, `jupyter`/`ipykernel`/`nbclient`/`nbformat`, менеджер пакетов `pip`/`uv`.
 
