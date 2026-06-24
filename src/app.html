@@ -172,6 +172,19 @@ footer a{color:#8fe3ff}
 .clitem.done .txt{color:#7a93a1;text-decoration:line-through;text-decoration-color:#bcd9e2}
 .badge{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:6px;margin-right:7px;vertical-align:1px}
 .badge.must{background:#0E9BD8;color:#fff}.badge.should{background:#cfeede;color:#157a3a}.badge.may{background:#eef2f4;color:#7a93a1}
+/* launch */
+.launch-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:24px;margin-top:26px}
+.launch-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:760px){.launch-steps{grid-template-columns:1fr}}
+.lstep{display:flex;gap:12px;align-items:flex-start}
+.lstep .n{flex:0 0 30px;height:30px;border-radius:9px;background:var(--grad);color:#063;font-weight:800;display:flex;align-items:center;justify-content:center}
+.lstep b{font-size:14.5px}.lstep p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.linkbox{display:flex;align-items:center;gap:10px;background:#0e2430;border-radius:12px;padding:11px 12px;flex-wrap:wrap}
+.linkbox code{flex:1;min-width:200px;color:#9fe6c2;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;word-break:break-all}
+.linkbox button{background:var(--grad);color:#063;border:0;border-radius:9px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
+.linkbox button:hover{filter:brightness(1.05)}
+.phrase{margin-top:12px;background:var(--grad-soft);border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:14px}
+.phrase .q{font-style:italic;color:#0e3a4d}
 </style>
 </head>
 <body>
@@ -181,10 +194,10 @@ footer a{color:#8fe3ff}
 <header class="top"><div class="wrap">
   <div class="logo"><div class="mark"></div><div>DDDM · Сквозная практика<small>Принятие решений на основе данных и ИИ</small></div></div>
   <nav class="menu">
+    <a href="#launch">▶ Запуск агента</a>
     <a href="#how">Как работает</a>
     <a href="#checklist">Чек-лист агента</a>
     <a href="#program">Программа</a>
-    <a href="#artifacts">Артефакты</a>
     <a href="#finmodel">Финмодель</a>
     <a href="#deck">Защита</a>
   </nav>
@@ -211,8 +224,34 @@ footer a{color:#8fe3ff}
   </div>
 </div></div>
 
+<!-- LAUNCH -->
+<section id="launch"><div class="wrap">
+  <span class="eyebrow">С чего начать на практике</span>
+  <h2>Запуск агента — 3 шага</h2>
+  <p class="sec-lead">Эта страница — материалы для вас. Чтобы агент начал вести проект, дайте ему ссылку
+    на файл-инструкцию: он сам прочитает репозиторий, программу и правила — и начнёт работать по шагам,
+    останавливаясь на согласование.</p>
+  <div class="launch-card">
+    <div class="launch-steps">
+      <div class="lstep"><div class="n">1</div><div><b>Отсканируйте QR / откройте ссылку</b><p>Введите пароль один раз — дальше браузер запомнит. Изучите материалы и шаги ниже.</p></div></div>
+      <div class="lstep"><div class="n">2</div><div><b>Дайте агенту ссылку для агента</b><p>Скопируйте ссылку ниже и отправьте своему ИИ-агенту в Telegram.</p></div></div>
+      <div class="lstep"><div class="n">3</div><div><b>Агент ведёт проект по шагам</b><p>Читает репозиторий и программу, выполняет шаг, делает паузу на ваше согласование, идёт дальше.</p></div></div>
+    </div>
+    <div class="lbl">Ссылка для агента (он прочитает её первой)</div>
+    <div class="linkbox">
+      <code id="agentLink">https://github.com/wybaeb/dddm-ai-practice-demo/blob/main/AGENT.md</code>
+      <button data-copy="link">Скопировать ссылку</button>
+    </div>
+    <div class="phrase">
+      Или скопируйте готовое сообщение агенту:
+      <div class="q" id="agentPhrase">«Изучи https://github.com/wybaeb/dddm-ai-practice-demo/blob/main/AGENT.md и веди меня по практике шаг за шагом: на каждом шаге выполняй работу, показывай артефакт и останавливайся на моё согласование, только потом переходи дальше.»</div>
+      <button class="btn sm" data-copy="phrase" style="margin-top:10px">Скопировать сообщение</button>
+    </div>
+  </div>
+</div></section>
+
 <!-- HOW IT WORKS -->
-<section id="how"><div class="wrap">
+<section id="how" class="alt"><div class="wrap">
   <span class="eyebrow">Принцип работы</span>
   <h2>Агент = тренажёр-наставник, а не «ответчик»</h2>
   <p class="sec-lead">Оригинальный курс использует репозиторий с промптами, DeepSeek для анализа рынка и Jupyter
@@ -530,6 +569,14 @@ function renderSteps(){
     toast('Промпт шага «'+STEPS[b.dataset.i].t+'» скопирован');}));
 }
 renderSteps();
+
+/* ---------- LAUNCH copy ---------- */
+$$('[data-copy]').forEach(b=>b.addEventListener('click',()=>{
+  const kind=b.dataset.copy;
+  const txt=kind==='link'?$('#agentLink').textContent.trim():$('#agentPhrase').textContent.trim();
+  navigator.clipboard?.writeText(txt);
+  toast(kind==='link'?'Ссылка для агента скопирована':'Сообщение агенту скопировано');
+}));
 
 /* ---------- CHECKLIST ---------- */
 const CL=[
