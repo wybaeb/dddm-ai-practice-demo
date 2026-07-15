@@ -66,7 +66,7 @@ button:hover{{filter:brightness(1.04)}}
  <!-- Незашифрованная часть: ссылка для ИИ-агента (доступна БЕЗ пароля).
       Агент читает её первой и начинает вести практику по программе репозитория. -->
  <div class="agent">
-   <b>🤖 Для ИИ-агента (без пароля):</b> начните с инструкции
+   <b><svg style="width:1.1em;height:1.1em;vertical-align:-0.2em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="9" width="14" height="11" rx="2"/><circle cx="9" cy="14" r="1.5"/><circle cx="15" cy="14" r="1.5"/><path d="M10 18h4"/><path d="M12 4v5"/><circle cx="12" cy="3" r="1.5"/><path d="M3 13h2"/><path d="M19 13h2"/></svg> Для ИИ-агента (без пароля):</b> начните с инструкции
    <a href="https://github.com/wybaeb/dddm-ai-practice-demo/blob/main/AGENT.md">AGENT.md</a>
    — в ней программа практики, правила и ссылки на <code>PROGRAM.md</code> / <code>CHECKLIST.md</code>.
    <br>Raw: <a href="https://raw.githubusercontent.com/wybaeb/dddm-ai-practice-demo/main/AGENT.md">raw AGENT.md</a>

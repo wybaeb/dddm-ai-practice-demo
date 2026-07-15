@@ -166,16 +166,18 @@ footer a{color:#8fe3ff}
 .phrase .q{font-style:italic;color:#0e3a4d}
 .hint{margin-top:14px;font-size:13px;color:var(--muted);background:#fff8ec;border:1px solid #ffe2b0;border-radius:12px;padding:11px 14px}
 .hint b{color:#b5740c}
+.ico{width:1.1em;height:1.1em;vertical-align:-0.2em;stroke:currentColor;fill:none;
+ stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 </style>
 </head>
 <body>
 
-<div class="banner">🎛 Интерактивная мини-презентация программы практики · этап → результат · демо на проекте «Пульс» · v0.2</div>
+<div class="banner"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2.2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2.2"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2.2"/></svg> Интерактивная мини-презентация программы практики · этап → результат · демо на проекте «Пульс» · v0.2</div>
 
 <header class="top"><div class="wrap">
   <div class="logo"><div class="mark"></div><div>DDDM · Сквозная практика<small>Принятие решений на основе данных и ИИ</small></div></div>
   <nav class="menu">
-    <a href="#launch">▶ Запуск агента</a>
+    <a href="#launch"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg> Запуск агента</a>
     <a href="#how">Как работает</a>
     <a href="#program">Этапы</a>
     <a href="#finmodel">Финмодель</a>
@@ -185,16 +187,16 @@ footer a{color:#8fe3ff}
 
 <!-- HERO -->
 <div class="hero"><div class="wrap">
-  <span class="chip">▲ Telegram-агент · ведёт слушателя по этапам практики</span>
+  <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Telegram-агент · ведёт слушателя по этапам практики</span>
   <h1>От бизнес-вопроса до защиты проекта — за руку с ИИ-ассистентом</h1>
   <p class="lead">Это интерактивная презентация того, что слушатель <b>делает на занятиях</b>: 7 этапов,
     и на каждом — конкретный <b>результат</b> (артефакт). Агент в Telegram знает всю программу, на каждом
     этапе даёт промпт, помогает собрать результат и делает паузу на ваше ревью. В финале — презентация-защита
     в шаблоне заказчика.</p>
   <div class="cta">
-    <a class="btn solid" href="#program">▶ Пройти этапы практики</a>
-    <a class="btn ghost" href="#finmodel">📊 Живая финмодель</a>
-    <a class="btn ghost" href="#deck">🖥 Защита</a>
+    <a class="btn solid" href="#program"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg> Пройти этапы практики</a>
+    <a class="btn ghost" href="#finmodel"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Живая финмодель</a>
+    <a class="btn ghost" href="#deck"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> Защита</a>
   </div>
   <div class="meta">
     <div><b>7</b>этапов — у каждого свой результат</div>
@@ -227,7 +229,7 @@ footer a{color:#8fe3ff}
       <div class="q" id="agentPhrase">«Изучи https://github.com/wybaeb/dddm-ai-practice-demo/blob/main/AGENT.md и веди меня по практике этап за этапом: на каждом этапе выполняй работу, показывай результат и останавливайся на моё согласование, только потом переходи дальше.»</div>
       <button class="btn sm" data-copy="phrase" style="margin-top:10px">Скопировать сообщение</button>
     </div>
-    <div class="hint">🔓 <b>Ссылку для агента можно давать без пароля.</b> Страница с материалами зашифрована,
+    <div class="hint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.8-1.3"/></svg> <b>Ссылку для агента можно давать без пароля.</b> Страница с материалами зашифрована,
       но ссылка на <code>AGENT.md</code> лежит в <b>открытой</b> части — агент переходит по ней и читает программу
       из публичного репозитория, пароль ему не нужен. Под паролем — только эта презентация для людей.</div>
   </div>
@@ -246,7 +248,7 @@ footer a{color:#8fe3ff}
     <div class="node"><div class="n">3</div><h4>Собирает результат</h4><p>Агент оформляет артефакт (.md/.doc/.pdf/.png) и выкладывает по ссылке.</p></div>
     <div class="node"><div class="n">4</div><h4>Пауза на ревью</h4><p>Слушатель проверяет и правит. Только после «ок» агент идёт к следующему этапу.</p></div>
   </div>
-  <div class="loopbar">🔁 Цикл повторяется на каждом этапе. Агент <b>фиксирует прогресс</b>, помнит, что уже
+  <div class="loopbar"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10"/><path d="M3.51 15A9 9 0 0 0 18.36 18.36L23 14"/></svg> Цикл повторяется на каждом этапе. Агент <b>фиксирует прогресс</b>, помнит, что уже
     собрано, и в конце <b>сам верстает</b> все артефакты в презентацию-защиту по шаблону заказчика.</div>
 </div></section>
 
@@ -544,11 +546,11 @@ function renderSteps(){
      <div class="head">
        <div class="idx">${s.idx}</div>
        <div class="ttl"><h3>Этап ${s.idx} · ${s.t}</h3><span>${s.m}</span></div>
-       <div class="art">📦 ${s.art}</div>
+       <div class="art"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8.5v7.7a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4a2 2 0 0 1-1-1.73V8.5a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4a2 2 0 0 1 1 1.73z"/><path d="M3.3 7.3L12 12l8.7-4.7"/><path d="M12 22V12"/></svg> ${s.art}</div>
        <div class="tog">+</div>
      </div>
      <div class="body">
-       <div class="resultbar">🎯 <b>Результат этапа:</b> ${s.result}</div>
+       <div class="resultbar"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> <b>Результат этапа:</b> ${s.result}</div>
        <div class="grid">
          <div>
            <div class="lbl">Что делает агент</div>
