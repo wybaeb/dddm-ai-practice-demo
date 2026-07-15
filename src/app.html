@@ -168,6 +168,9 @@ footer a{color:#8fe3ff}
 .hint b{color:#b5740c}
 .ico{width:1.1em;height:1.1em;vertical-align:-0.2em;stroke:currentColor;fill:none;
  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.step .head .idx.sic{background:none;box-shadow:none}
+.step .head .idx.sic img{width:52px;height:52px;object-fit:contain}
+.nic{width:46px;height:46px;object-fit:contain;display:block;margin:2px 0 6px}
 </style>
 </head>
 <body>
@@ -243,10 +246,10 @@ footer a{color:#8fe3ff}
     для финмоделей. Здесь всё это переложено на ассистента: программа и подсказки лежат в публичном репозитории,
     агент держит их в памяти и проводит слушателя по циклу — этап за этапом, к результату.</p>
   <div class="loop">
-    <div class="node"><div class="n">1</div><h4>Даёт промпт этапа</h4><p>Агент берёт из программы детальный промпт и адаптирует под продукт слушателя.</p></div>
-    <div class="node"><div class="n">2</div><h4>Помогает выполнить</h4><p>Промпт уходит в ИИ (Perplexity / Python / MARP). Слушатель — контролёр выводов.</p></div>
-    <div class="node"><div class="n">3</div><h4>Собирает результат</h4><p>Агент оформляет артефакт (.md/.doc/.pdf/.png) и выкладывает по ссылке.</p></div>
-    <div class="node"><div class="n">4</div><h4>Пауза на ревью</h4><p>Слушатель проверяет и правит. Только после «ок» агент идёт к следующему этапу.</p></div>
+    <div class="node"><div class="n">1</div><img class="nic" src="icons/text_gen.png" alt=""><h4>Даёт промпт этапа</h4><p>Агент берёт из программы детальный промпт и адаптирует под продукт слушателя.</p></div>
+    <div class="node"><div class="n">2</div><img class="nic" src="icons/rocket.png" alt=""><h4>Помогает выполнить</h4><p>Промпт уходит в ИИ (Perplexity / Python / MARP). Слушатель — контролёр выводов.</p></div>
+    <div class="node"><div class="n">3</div><img class="nic" src="icons/list.png" alt=""><h4>Собирает результат</h4><p>Агент оформляет артефакт (.md/.doc/.pdf/.png) и выкладывает по ссылке.</p></div>
+    <div class="node"><div class="n">4</div><img class="nic" src="icons/clock.png" alt=""><h4>Пауза на ревью</h4><p>Слушатель проверяет и правит. Только после «ок» агент идёт к следующему этапу.</p></div>
   </div>
   <div class="loopbar"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10"/><path d="M3.51 15A9 9 0 0 0 18.36 18.36L23 14"/></svg> Цикл повторяется на каждом этапе. Агент <b>фиксирует прогресс</b>, помнит, что уже
     собрано, и в конце <b>сам верстает</b> все артефакты в презентацию-защиту по шаблону заказчика.</div>
@@ -539,12 +542,13 @@ const STEPS=[
 Каждый слайд — заголовок + ≤3 буллета + 1 цифра/график. Графики — картинками из расчётов этапа 5.
 Стиль — шаблон заказчика (фирменный градиент, крупная типографика). Выдай Markdown для MARP под экспорт в PDF.`}
 ];
+const SICON={'0':'tree','1':'search','2':'scale','3':'users','4':'book','5':'calculator','6':'shield'};
 function renderSteps(){
   const c=$('#steps');
   c.innerHTML=STEPS.map((s,i)=>`
    <div class="step${i===0?' open':''}" data-i="${i}">
      <div class="head">
-       <div class="idx">${s.idx}</div>
+       <div class="idx sic"><img src="icons/${SICON[s.idx]}.png" alt="Этап ${s.idx}"></div>
        <div class="ttl"><h3>Этап ${s.idx} · ${s.t}</h3><span>${s.m}</span></div>
        <div class="art"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8.5v7.7a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4a2 2 0 0 1-1-1.73V8.5a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4a2 2 0 0 1 1 1.73z"/><path d="M3.3 7.3L12 12l8.7-4.7"/><path d="M12 22V12"/></svg> ${s.art}</div>
        <div class="tog">+</div>
@@ -555,7 +559,7 @@ function renderSteps(){
          <div>
            <div class="lbl">Что делает агент</div>
            <ol class="proc">${s.proc.map(p=>`<li>${p}</li>`).join('')}</ol>
-           <div class="pause"><b>⏸ Пауза на ревью.</b> Агент не идёт дальше, пока слушатель не подтвердит результат.</div>
+           <div class="pause"><b><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="10" y1="9" x2="10" y2="15"/><line x1="14" y1="9" x2="14" y2="15"/></svg> Пауза на ревью.</b> Агент не идёт дальше, пока слушатель не подтвердит результат.</div>
          </div>
          <div>
            <div class="lbl">${s.promptLabel||'Промпт этапа'}</div>
