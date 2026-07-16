@@ -88,7 +88,9 @@ section.alt{background:linear-gradient(180deg,#fff,#f0f9fc)}
 @media(max-width:680px){
   .step .head{flex-wrap:wrap;row-gap:10px;padding:16px 18px}
   .step .head .ttl{min-width:0}
-  .step .head .art{order:6;flex:1 1 100%;max-width:none;white-space:normal;text-align:left}
+  /* flex-строка: глобальное svg{display:block} иначе уводит иконку на свою строку */
+  .step .head .art{order:6;flex:1 1 100%;max-width:none;white-space:normal;text-align:left;
+    display:flex;align-items:center;gap:8px}
 }
 .step.open .head .tog{transform:rotate(45deg)}
 .step .body{display:none;padding:0 22px 22px;border-top:1px solid var(--line)}
